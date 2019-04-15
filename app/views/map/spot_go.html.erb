@@ -1,0 +1,85 @@
+<head>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c3f3b1d29ba4d09faaad947986c52da5&libraries=services"></script>
+  <style>
+  .container {
+  width: 70%;
+  height: 70%;
+  margin: 40px auto;
+
+  }
+  .area {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 3px;
+  font-size: 12px;
+  top: -5px;
+  left: 15px;
+  padding:2px;
+  }
+
+  .info {
+  font-size: 12px;
+  padding: 5px;
+  width : 200px;
+  }
+  .info .title {
+      font-weight: bold;
+  }
+  </style>
+</head>
+ <div class="container">
+        <div class="alert alert-dark" role="alert">
+          밀도 기반 지도
+        </div>
+    </div>
+<div class="container">
+  <div id="map" style="width:1200px;height:1200px;"></div>
+</div>
+<script>
+
+var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    mapOption = {
+        center: new daum.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+        level: 8 // 지도의 확대 레벨
+    };
+
+
+var map = new daum.maps.Map(mapContainer, mapOption),
+    customOverlay = new daum.maps.CustomOverlay({}),
+    infowindow = new daum.maps.InfoWindow({removable: true});
+
+
+// 마커를 표시할 위치와 title 객체 배열입니다
+$.getJSON("/assets/go_total3.geojson", function(geojson) {
+
+    var data = geojson.features;
+    var x = '';     //식육 모수 숫자
+    var y = ''; //식육 모수 순위
+
+    $.each(data, function(index, val) {
+
+        x = val.x;
+        y= val.y;
+        var latlng = new daum.maps.LatLng(x, y)
+        var imageSrc = "/assets/green_point.jpg";
+        var imageSize = new daum.maps.Size(5, 5);
+
+        // 마커 이미지를 생성합니다
+        var markerImage = new daum.maps.MarkerImage(imageSrc, imageSize);
+
+        // 마커를 생성합니다
+        var marker = new daum.maps.Marker({
+            map: map, // 마커를 표시할 지도
+            position: latlng, // 마커를 표시할 위치
+            // title : positions[i].title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+            image : markerImage // 마커 이미지
+        });
+        // displayArea(coordinates, name, color, crime_rate,crime_rate_grade,move_time,move_time_grade,seed_meat,seed_meat_grade);
+
+    })
+});
+
+</script>
